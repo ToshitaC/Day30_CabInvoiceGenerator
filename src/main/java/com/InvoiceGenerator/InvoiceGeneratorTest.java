@@ -3,6 +3,9 @@ package com.InvoiceGenerator;
 import org.junit.Assert;
 import org.junit.Test;
 
+
+import java.util.ArrayList;
+
 public class InvoiceGeneratorTest {
     public static InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
 
@@ -16,7 +19,6 @@ public class InvoiceGeneratorTest {
 
     @Test
     public void givenLessDistanceAndTime_ShouldReturnMinFare() {
-
         double distance = 0.1;
         int time = 1;
         double fare = invoiceGenerator.calculateFare(distance, time);
@@ -25,7 +27,6 @@ public class InvoiceGeneratorTest {
 
     @Test
     public void givenMultipleRides_ShouldReturnTotalFare() {
-
         Ride[] rides = {new Ride(2.0, 5),
                 new Ride(0.1, 1)};
         double totalFare = invoiceGenerator.calculateFare(rides);
@@ -34,12 +35,31 @@ public class InvoiceGeneratorTest {
 
     @Test
     public void givenMultipleRides_ShouldReturnInvoiceSummary() {
-
-        Ride[] rides = {new Ride(2.0, 5),
-                new Ride(0.1, 1)};
+        ArrayList<Ride> rides = new ArrayList<Ride>();
+        rides.add(new Ride(2.0, 5));
+        rides.add(new Ride(0.1, 1));
         InvoiceSummary summary = invoiceGenerator.calculateFareReturnObject(rides);
         InvoiceSummary expectedSummary = new InvoiceSummary(2, 30);
         if (expectedSummary.getAverageFare() == summary.getAverageFare() && expectedSummary.getNumberOfRides() == summary.getNumberOfRides() && expectedSummary.getTotalFare() == summary.getTotalFare())
+            Assert.assertEquals(1, 1);
+    }
+
+    @Test
+    public void givenUserId_ShouldReturnInvoiceSummary() {
+
+        String userId = "User1";
+        InvoiceService invoiceService = new InvoiceService();
+
+        ArrayList<Ride> rides = new ArrayList<Ride>();
+        rides.add(new Ride(2.0, 5));
+        rides.add(new Ride(0.1, 1));
+
+        invoiceService.addRide(userId, rides);
+        ArrayList<Ride> listOfRides = invoiceService.getRides(userId);
+
+        InvoiceSummary summaryForUser1 = invoiceGenerator.calculateFareReturnObject(listOfRides);
+        InvoiceSummary expectedSummary = new InvoiceSummary(2, 30);
+        if (expectedSummary.getAverageFare() == summaryForUser1.getAverageFare() && expectedSummary.getNumberOfRides() == summaryForUser1.getNumberOfRides() && expectedSummary.getTotalFare() == summaryForUser1.getTotalFare())
             Assert.assertEquals(1, 1);
     }
 }
